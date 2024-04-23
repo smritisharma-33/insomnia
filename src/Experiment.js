@@ -60,6 +60,7 @@ function Experiment() {
       const imageNumber = types[iteration] === 'target' ? type : Math.floor(Math.random() * 5) + 1;
       import(`./Images/Type/${imageType}/${imageType}${imageNumber}.jpg`)
         .then((importedImage) => {
+          console.log(importedImage);
           setImage(importedImage.default);
           const imageTimer = setTimeout(() => {
             setShowImage(false);
@@ -78,6 +79,7 @@ function Experiment() {
     setPaintingNumber(paintingNumber);
     import(`./Images/Neutral/pic${paintingNumber}.png`)
       .then((image) => {
+        console.log(image);
         setPainting(image.default);
         const paintingTimer = setTimeout(() => {
           setShowPainting(false);
