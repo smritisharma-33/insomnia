@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { utils, write } from 'xlsx';
 import { saveAs } from 'file-saver';
-import './Experiment.css'; 
+import './Experiment.css'; // Ensure your styles are correctly set up in this CSS file
 
 function Experiment() {
   const location = useLocation();
@@ -18,8 +18,11 @@ function Experiment() {
   const [responses, setResponses] = useState([]);
   const [paintingNumber, setPaintingNumber] = useState(null);
 
+
+  // Create an array of 40 elements with 20 'target' and 20 'control'
   const types = Array(20).fill('target').concat(Array(20).fill('control'));
 
+  // Shuffle the array
   types.sort(() => Math.random() - 0.5);
 
   useEffect(() => {
@@ -34,12 +37,12 @@ function Experiment() {
         const imageTimer = setTimeout(() => {
           setShowImage(false);
           setShowPainting(true);
-        }, 75 + Math.floor(Math.random() * 21) - 10); 
+        }, 75 + Math.floor(Math.random() * 21) - 10); // 75 +/- 10 ms
         return () => clearTimeout(imageTimer);
-      }, 250 + Math.floor(Math.random() * 51) - 25); 
+      }, 250 + Math.floor(Math.random() * 51) - 25); // 250 +/- 25 ms
       return () => clearTimeout(timer);
     } else {
-      
+      // All iterations are done, generate the Excel file
       const wb = utils.book_new();
       const ws = utils.json_to_sheet(responses);
       utils.book_append_sheet(wb, ws, 'Responses');
@@ -61,7 +64,7 @@ function Experiment() {
           const imageTimer = setTimeout(() => {
             setShowImage(false);
             setShowPainting(true);
-          }, 75);
+          }, 75 + Math.floor(Math.random() * 31) - 15); // 75 +/- 15 ms
           return () => clearTimeout(imageTimer);
         })
         .catch((error) => {
@@ -69,26 +72,25 @@ function Experiment() {
         });
     }
   }, [showImage, cond, iteration, types]);
-
   useEffect(() => {
-    if (showPainting) {
-      const paintingNumber = Math.floor(Math.random() * 40) + 1;
-      setPaintingNumber(paintingNumber);
-      import(`./Images/Neutral/pic${paintingNumber}.png`)
-        .then((image) => {
-          setPainting(image.default);
-          const paintingTimer = setTimeout(() => {
-            setShowPainting(false);
-            setShowPrompt(true);
-            setStartTime(Date.now());
-          }, 100 + Math.floor(Math.random() * 31) - 15); 
-          return () => clearTimeout(paintingTimer);
-        })
-        .catch((error) => {
-          console.error(`Error loading painting: ${error}`);
-        });
-    }
-  }, [showPainting]);
+  if (showPainting) {
+    const paintingNumber = Math.floor(Math.random() * 40) + 1;
+    setPaintingNumber(paintingNumber);
+    import(`./Images/Neutral/pic${paintingNumber}.png`)
+      .then((image) => {
+        setPainting(image.default);
+        const paintingTimer = setTimeout(() => {
+          setShowPainting(false);
+          setShowPrompt(true);
+          setStartTime(Date.now());
+        }, 100 + Math.floor(Math.random() * 31) - 15); // 100 +/- 15 ms
+        return () => clearTimeout(paintingTimer);
+      })
+      .catch((error) => {
+        console.error(`Error loading painting: ${error}`);
+      });
+  }
+}, [showPainting, setPainting]);
 
   useEffect(() => {
     if (showPrompt) {
@@ -104,7 +106,7 @@ function Experiment() {
               setImage(null);
               setPainting(null);
             }
-            
+            // Save the response
             setResponses(responses => [...responses, {
               idnum,
               cond,
@@ -115,13 +117,14 @@ function Experiment() {
               response: event.key,
               RT: endTime - startTime
             }]);
-          }, 1000 + Math.floor(Math.random() * 501) - 250); 
+          }, 1000 + Math.floor(Math.random() * 501) - 250); // 1000 +/- 250 ms
           return () => clearTimeout(nextTrialTimer);
         }
       };
 
       window.addEventListener('keydown', handleKeyDown);
 
+      // Cleanup function to remove the event listener if the component unmounts
       return () => window.removeEventListener('keydown', handleKeyDown);
     }
   }, [showPrompt, startTime, iteration]);
@@ -149,6 +152,7 @@ function Experiment() {
 
 export default Experiment;
 
+// Helper function to convert a string to an array buffer
 function s2ab(s) {
   var buf = new ArrayBuffer(s.length);
   var view = new Uint8Array(buf);
