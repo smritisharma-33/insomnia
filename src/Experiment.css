@@ -1,0 +1,51 @@
+/* Main container style */
+.experiment-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Style for the fixation cross */
+.fixation-cross {
+    font-size: 48px; /* Large size for clear visibility */
+    color: black;
+    margin: 20px;
+}
+
+/* General button styling */
+.button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Styling for disabled buttons */
+.button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Styling for important messages or instructions */
+.message {
+    font-size: 20px;
+    margin: 10px;
+}
+
+/* Response and timing feedback styles */
+.response-feedback {
+    font-size: 16px;
+    margin-top: 10px;
+}
+
