@@ -18,7 +18,6 @@ function Experiment() {
   const [responses, setResponses] = useState([]);
   const [paintingNumber, setPaintingNumber] = useState(null);
 
-
   const types = Array(20).fill('target').concat(Array(20).fill('control'));
 
   types.sort(() => Math.random() - 0.5);
@@ -34,16 +33,13 @@ function Experiment() {
         setShowImage(true);
         const imageTimer = setTimeout(() => {
           setShowImage(false);
-          const paintingTimer = setTimeout(() => {
-            setShowPainting(true);
-          }, 3000);
-          return () => clearTimeout(paintingTimer);
-        }, 3000);
+          setShowPainting(true);
+        }, 75 + Math.floor(Math.random() * 21) - 10); 
         return () => clearTimeout(imageTimer);
-      }, 3000); 
-
+      }, 250 + Math.floor(Math.random() * 51) - 25); 
       return () => clearTimeout(timer);
     } else {
+      
       const wb = utils.book_new();
       const ws = utils.json_to_sheet(responses);
       utils.book_append_sheet(wb, ws, 'Responses');
@@ -65,7 +61,7 @@ function Experiment() {
           const imageTimer = setTimeout(() => {
             setShowImage(false);
             setShowPainting(true);
-          }, 3000);
+          }, 75);
           return () => clearTimeout(imageTimer);
         })
         .catch((error) => {
@@ -76,7 +72,7 @@ function Experiment() {
 
   useEffect(() => {
     if (showPainting) {
-      const paintingNumber = Math.floor(Math.random() * 40) + 1; 
+      const paintingNumber = Math.floor(Math.random() * 40) + 1;
       setPaintingNumber(paintingNumber);
       import(`./Images/Neutral/pic${paintingNumber}.png`)
         .then((image) => {
@@ -85,7 +81,7 @@ function Experiment() {
             setShowPainting(false);
             setShowPrompt(true);
             setStartTime(Date.now());
-          }, 3000);
+          }, 100 + Math.floor(Math.random() * 31) - 15); 
           return () => clearTimeout(paintingTimer);
         })
         .catch((error) => {
@@ -101,22 +97,26 @@ function Experiment() {
           const endTime = Date.now();
           console.log(`Time taken: ${endTime - startTime} ms`);
           setShowPrompt(false);
-          setIteration(iteration + 1);
-          if (iteration < 40) {
-            setShowFixation(true);
-            setImage(null);
-            setPainting(null);
-          }
-          setResponses(responses => [...responses, {
-            idnum,
-            cond,
-            type,
-            order: iteration + 1,
-            imageName: `pic${paintingNumber}.png`,
-            trialType: types[iteration],
-            response: event.key,
-            RT: endTime - startTime
-          }]);
+          const nextTrialTimer = setTimeout(() => {
+            setIteration(iteration + 1);
+            if (iteration < 40) {
+              setShowFixation(true);
+              setImage(null);
+              setPainting(null);
+            }
+            
+            setResponses(responses => [...responses, {
+              idnum,
+              cond,
+              type,
+              order: iteration + 1,
+              imageName: `pic${paintingNumber}.png`,
+              trialType: types[iteration],
+              response: event.key,
+              RT: endTime - startTime
+            }]);
+          }, 1000 + Math.floor(Math.random() * 501) - 250); 
+          return () => clearTimeout(nextTrialTimer);
         }
       };
 
